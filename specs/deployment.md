@@ -15,7 +15,7 @@ The repository includes `firebase.json` configured for Firebase Hosting:
 - Public URL: `https://clean-minesweeper.web.app`
 - Alternate Firebase URL: `https://clean-minesweeper.firebaseapp.com`
 
-## Local-only Runtime
+## Browser-only Runtime
 
 The game must not depend on Firebase SDKs, remote APIs, analytics, cookies, accounts, or server state. Firebase is only a static hosting target.
 

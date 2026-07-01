@@ -1,6 +1,16 @@
 # Clean Minesweeper
 
-A dependency-free static Minesweeper game for local play and later Firebase Hosting deployment.
+A clean, dependency-free Minesweeper game that runs entirely in the browser.
+
+Live site: https://clean-minesweeper.web.app
+
+## Features
+
+- Classic beginner, intermediate, and expert boards
+- First-click-safe mine placement
+- Mouse, keyboard, and touchscreen controls
+- Locally generated PNG tile/icon assets
+- No runtime dependencies, accounts, analytics, ads, or network API calls
 
 ## Run Locally
 
@@ -22,14 +32,10 @@ If Node is not installed, Deno can run the same test file:
 deno run tests/game.test.mjs
 ```
 
-## Deploy Later
+## Deploy
 
-The project includes `firebase.json` with `public/` as the hosting root. After choosing a Firebase project:
+Firebase Hosting is configured with `public/` as the deploy root.
 
 ```bash
-firebase login
-firebase init hosting
-firebase deploy
+firebase deploy --only hosting --project clean-minesweeper
 ```
-
-Use the existing `public` directory when prompted.

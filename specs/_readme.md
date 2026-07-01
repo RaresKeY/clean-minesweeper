@@ -1,6 +1,6 @@
 # Clean Minesweeper Document Map
 
-Clean Minesweeper is a local-only static web Minesweeper game. The deployable surface lives in `public/` and must not require outside runtime dependencies.
+Clean Minesweeper is a browser-only static web Minesweeper game. The deployable surface lives in `public/` and must not require outside runtime dependencies.
 
 ## Active Specs
 
@@ -10,7 +10,7 @@ Clean Minesweeper is a local-only static web Minesweeper game. The deployable su
 | [Gameplay Engine](gameplay_engine.md) | Game rules | Defines board generation, reveal, flagging, win/loss, timer, and difficulty behavior. |
 | [Input And Accessibility](input_accessibility.md) | Interaction | Defines mouse, keyboard, touch, focus, and screen-reader behavior. |
 | [Visual Assets](visual_assets.md) | Assets | Defines generated tile images, favicon, sizing, and number rendering rules. |
-| [Deployment](deployment.md) | Hosting | Defines Firebase Hosting assumptions and local-only runtime constraints. |
+| [Deployment](deployment.md) | Hosting | Defines Firebase Hosting assumptions and browser-only runtime constraints. |
 | [Verification](verification.md) | Testing | Defines local checks and expected manual smoke coverage. |
 
 ## Current Boundaries
