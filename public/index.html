@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#1f4f46">
+    <title>Clean Minesweeper</title>
+    <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png">
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="shell" aria-labelledby="game-title">
+      <header class="topbar">
+        <div>
+          <h1 id="game-title">Clean Minesweeper</h1>
+          <p id="status" class="status" aria-live="polite">Choose a square to start.</p>
+        </div>
+        <button id="reset-button" class="reset-button" type="button" aria-label="Restart game">New</button>
+      </header>
+
+      <section class="controls" aria-label="Game controls">
+        <label class="field">
+          <span>Difficulty</span>
+          <select id="difficulty-select">
+            <option value="beginner">Beginner 9x9</option>
+            <option value="intermediate">Intermediate 16x16</option>
+            <option value="expert">Expert 30x16</option>
+          </select>
+        </label>
+        <div class="meter" aria-label="Mines remaining">
+          <span class="meter-label">Mines</span>
+          <span id="mine-count" class="meter-value">010</span>
+        </div>
+        <div class="meter" aria-label="Elapsed time">
+          <span class="meter-label">Time</span>
+          <span id="timer" class="meter-value">000</span>
+        </div>
+      </section>
+
+      <section class="board-wrap" aria-label="Minesweeper board">
+        <div id="board" class="board" role="grid" aria-label="Minesweeper grid"></div>
+      </section>
+    </main>
+
+    <script type="module" src="src/app.js"></script>
+  </body>
+</html>
