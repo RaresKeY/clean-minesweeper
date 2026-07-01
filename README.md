@@ -16,6 +16,12 @@ Then open `http://localhost:8080`.
 node tests/game.test.mjs
 ```
 
+If Node is not installed, Deno can run the same test file:
+
+```bash
+deno run tests/game.test.mjs
+```
+
 ## Deploy Later
 
 The project includes `firebase.json` with `public/` as the hosting root. After choosing a Firebase project:

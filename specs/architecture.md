@@ -13,6 +13,7 @@ The application is a static web app:
 | `public/assets/` | Generated PNG assets and favicon files consumed by the page. |
 | `scripts/` | Local generation helpers; not required at runtime. |
 | `tests/` | Node-based verification; not required at runtime. |
+| `package.json` | Local scripts and ESM test configuration with no dependencies. |
 
 ## Dependency Boundary
 

@@ -5,10 +5,22 @@
 Run:
 
 ```bash
+npm test
+```
+
+or, without npm:
+
+```bash
 node tests/game.test.mjs
 ```
 
-The automated test suite covers core engine behavior with Node built-ins only.
+If Node is unavailable, use Deno's Node-compatible standard imports:
+
+```bash
+deno run tests/game.test.mjs
+```
+
+The automated test suite covers core engine behavior with built-in runtime APIs only.
 
 ## Manual Smoke
 
