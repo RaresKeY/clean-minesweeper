@@ -34,8 +34,4 @@ deno run tests/game.test.mjs
 
 ## Deploy
 
-Firebase Hosting is configured with `public/` as the deploy root.
-
-```bash
-firebase deploy --only hosting --project clean-minesweeper
-```
+Deploy the contents of `public/` to any static host.

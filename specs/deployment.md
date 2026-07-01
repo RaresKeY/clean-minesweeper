@@ -1,24 +1,21 @@
 # Deployment
 
-## Firebase Hosting
+## Static Hosting
 
-The repository includes `firebase.json` configured for Firebase Hosting:
+The deployable app is the `public/` directory:
 
 - Hosting root: `public/`
-- Static asset cache: long-lived for PNG, ICO, and web manifest files.
-- HTML/CSS/JS cache: no-cache for simple updates during iteration.
+- Static asset cache should be long-lived for PNG, ICO, and web manifest files.
+- HTML/CSS/JS cache should be short-lived or revalidated for simple updates during iteration.
 
-## Current Deployment
+## Public Site
 
-- Firebase project ID: `clean-minesweeper`
-- Default Hosting site: `clean-minesweeper`
-- Public URL: `https://clean-minesweeper.web.app`
-- Alternate Firebase URL: `https://clean-minesweeper.firebaseapp.com`
+The public URL is listed in [README.md](../README.md).
 
 ## Browser-only Runtime
 
-The game must not depend on Firebase SDKs, remote APIs, analytics, cookies, accounts, or server state. Firebase is only a static hosting target.
+The game must not depend on provider SDKs, remote APIs, analytics, cookies, accounts, or server state. Hosting is only a static file target.
 
-## Project ID
+## Provider Config
 
-`.firebaserc` remains ignored because the deploy target can be selected with `--project clean-minesweeper`.
+Provider-specific config, project IDs, generated deployment caches, and login state should stay local unless a future public release needs them.
