@@ -11,7 +11,6 @@ The application is a static web app:
 | `public/src/game.js` | Pure game engine with no DOM dependency. |
 | `public/src/app.js` | DOM rendering, input wiring, persistence-free session state, and UI commands. |
 | `public/assets/` | Generated PNG assets and favicon files consumed by the page. |
-| `scripts/` | Local generation helpers; not required at runtime. |
 | `tests/` | Node-based verification; not required at runtime. |
 | `package.json` | Local scripts and ESM test configuration with no dependencies. |
 
@@ -19,7 +18,7 @@ The application is a static web app:
 
 - Runtime must work with only browser-native HTML, CSS, and JavaScript.
 - Tests must use Node built-ins only.
-- Asset generation may use Python standard library where practical, but committed assets are the source used by the app.
+- Committed PNG assets are the source used by the app; local generation helpers are intentionally excluded from Git.
 
 ## Module Contract
 

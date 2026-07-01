@@ -22,12 +22,6 @@
 | `favicon-64.png` | Browser favicon. |
 | `apple-touch-icon.png` | Home-screen icon. |
 
-## Regeneration
+## Regeneration Boundary
 
-Run:
-
-```bash
-python3 scripts/generate_assets.py
-```
-
-Generated files are committed because the deployed app must not generate assets at runtime.
+Generated files are committed because the deployed app must not generate assets at runtime. Asset-generation helpers are local-only and intentionally excluded from Git.
