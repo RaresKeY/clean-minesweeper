@@ -16,6 +16,7 @@
 - Revealing a zero-adjacent cell flood-reveals connected zeroes and their numbered boundary cells.
 - Flagging cycles closed cells through closed, flagged, question, and closed.
 - Revealed cells cannot be flagged.
+- Revealing a question-marked cell clears the question marker and reveals the cell.
 - Chording a revealed numbered cell reveals all closed neighbors when adjacent flags equal the number.
 - Win state occurs when every non-mine cell is revealed.
 - Loss state reveals all mines and marks incorrectly flagged cells.
