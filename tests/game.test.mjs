@@ -29,6 +29,18 @@ function testMarkCycle() {
   assert.equal(cell.mark, MARK_NONE);
 }
 
+function testQuestionRevealClearsMarker() {
+  const game = new MinesweeperGame(DIFFICULTIES.beginner, { rng: fixedRng(0.5) });
+  const cell = game.cellAt(3, 3);
+  game.cycleMark(3, 3);
+  game.cycleMark(3, 3);
+  assert.equal(cell.mark, MARK_QUESTION);
+  const result = game.reveal(3, 3);
+  assert.equal(result.started, true);
+  assert.equal(cell.mark, MARK_NONE);
+  assert.equal(cell.revealed, true);
+}
+
 function testWinFlagsRemainingMines() {
   const game = new MinesweeperGame({ width: 2, height: 2, mines: 1 }, { rng: fixedRng(0) });
   game.reveal(0, 0);
@@ -83,6 +95,7 @@ function testChordRevealsWhenFlagsMatch() {
 
 testFirstRevealSafety();
 testMarkCycle();
+testQuestionRevealClearsMarker();
 testWinFlagsRemainingMines();
 testLossRevealsMinesAndWrongFlags();
 testChordRevealsWhenFlagsMatch();

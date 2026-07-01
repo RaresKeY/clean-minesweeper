@@ -97,6 +97,10 @@ export class MinesweeperGame {
       return { changed: false, started: false };
     }
 
+    if (cell.mark === MARK_QUESTION) {
+      cell.mark = MARK_NONE;
+    }
+
     const started = this._ensureStarted(x, y);
     if (cell.mine) {
       cell.revealed = true;
