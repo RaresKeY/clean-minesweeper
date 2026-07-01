@@ -18,7 +18,7 @@ Clean Minesweeper is a local-only static web Minesweeper game. The deployable su
 - No network calls, analytics, ads, CDN fonts, package imports, or third-party runtime dependencies.
 - Generated raster assets are committed under `public/assets/`.
 - Numbers are rendered with CSS and text, not pre-rendered into tile images.
-- Firebase Hosting is configured, but no Firebase project ID is committed.
+- Firebase Hosting is configured for project `clean-minesweeper`; the project ID and public URLs are intentionally documented in [Deployment](deployment.md).
 
 ## Volatile State To Re-check
 
