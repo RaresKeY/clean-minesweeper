@@ -1,10 +1,10 @@
 :root {
   color-scheme: light;
-  --bg: #f3efe6;
+  --bg: #eef1ee;
   --ink: #1c2424;
   --muted: #64706d;
-  --panel: #fffaf0;
-  --panel-line: #d9d0bf;
+  --panel: #ffffff;
+  --panel-line: #cfd7d1;
   --accent: #1f4f46;
   --accent-strong: #173b35;
   --danger: #b73535;
@@ -69,7 +69,7 @@ h1 {
   border: 1px solid #163c35;
   border-radius: 8px;
   background: var(--accent);
-  color: #fffaf0;
+  color: #fff;
   cursor: pointer;
   font-weight: 720;
 }
@@ -108,7 +108,7 @@ select:focus-visible,
 
 select {
   height: 40px;
-  border: 1px solid #bdb4a4;
+  border: 1px solid #aeb9b1;
   border-radius: 7px;
   background: #fff;
   color: var(--ink);
@@ -143,12 +143,13 @@ select {
 }
 
 .board-wrap {
+  width: fit-content;
   max-width: 100%;
   margin-top: 14px;
   overflow: auto;
-  border: 1px solid #9d9587;
+  border: 1px solid #8f9b94;
   border-radius: 8px;
-  background: #bcb5a8;
+  background: #aeb8b0;
   padding: 6px;
   scrollbar-width: thin;
   touch-action: pan-x pan-y;
