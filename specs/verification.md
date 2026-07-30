@@ -35,6 +35,7 @@ After UI changes:
 - Verify mouse reveal, right-click flagging, and chording.
 - Verify keyboard arrows, `Space`/`Enter`, `F`, `R`, `M`/`O`, and `Escape`.
 - Verify touch tap, long-press, and menu-controlled flag mode on a touchscreen or browser device emulator.
-- Verify native-style block numbers, counter glyphs, gold focused-cell outline, centered board, and responsive board scrolling in dark and light themes.
+- Verify native-style block numbers, counter glyphs, gold focused-cell outline, centered board, and responsive board scrolling in dark and light themes. In particular, `2` and `3` must show complete top, middle, and bottom bars.
+- Verify focusing and clicking cells does not flash or rebuild unchanged cells, and that counters rebuild only when their displayed value changes.
 - Verify the page does not make network requests beyond its own static files.
 - After deployment changes merge, verify the Pages workflow succeeds and `https://rareskey.github.io/clean-minesweeper/` serves the expected app and static assets.

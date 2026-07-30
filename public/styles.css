@@ -14,7 +14,7 @@
   --menu-hover: #3a4441;
   --menu-selected-text: #181b1a;
   --tile-size: 32px;
-  --digit-pixel: max(2px, calc(var(--tile-size) / 8));
+  --digit-pixel: 4px;
 }
 
 body[data-theme="light"] {
@@ -299,161 +299,58 @@ button:focus-visible {
   background-image: url("assets/wrong-flag.png");
 }
 
-.cell.revealed[class*="number-"]::after {
+.cell-number-glyph {
   position: absolute;
-  top: calc(50% - var(--digit-pixel) * 2.5);
-  left: calc(50% - var(--digit-pixel) * 1.5);
+  top: 50%;
+  left: 50%;
+  display: grid;
+  width: calc(var(--digit-pixel) * 3);
+  height: calc(var(--digit-pixel) * 5);
+  grid-template-columns: repeat(3, var(--digit-pixel));
+  grid-template-rows: repeat(5, var(--digit-pixel));
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.cell-number-pixel {
   width: var(--digit-pixel);
   height: var(--digit-pixel);
-  background: transparent;
-  content: "";
-  pointer-events: none;
+}
+
+.cell-number-pixel.lit {
+  background: currentColor;
 }
 
 .number-1 {
   color: #5b9eff;
 }
 
-.number-1::after {
-  box-shadow:
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 0) 0 currentColor,
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 1) 0 currentColor,
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 1) 0 currentColor,
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 2) 0 currentColor,
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 3) 0 currentColor,
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 4) 0 currentColor,
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 4) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 4) 0 currentColor;
-}
-
 .number-2 {
   color: #5bc97a;
-}
-
-.number-2::after {
-  box-shadow:
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 0) 0 currentColor,
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 0) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 0) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 1) 0 currentColor,
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 2) 0 currentColor,
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 2) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 2) 0 currentColor,
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 3) 0 currentColor,
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 4) 0 currentColor,
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 4) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 4) 0 currentColor;
 }
 
 .number-3 {
   color: #ff6666;
 }
 
-.number-3::after {
-  box-shadow:
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 0) 0 currentColor,
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 0) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 0) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 1) 0 currentColor,
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 2) 0 currentColor,
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 2) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 2) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 3) 0 currentColor,
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 4) 0 currentColor,
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 4) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 4) 0 currentColor;
-}
-
 .number-4 {
   color: #ae91ff;
-}
-
-.number-4::after {
-  box-shadow:
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 0) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 0) 0 currentColor,
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 1) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 1) 0 currentColor,
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 2) 0 currentColor,
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 2) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 2) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 3) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 4) 0 currentColor;
 }
 
 .number-5 {
   color: #ec7660;
 }
 
-.number-5::after {
-  box-shadow:
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 0) 0 currentColor,
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 0) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 0) 0 currentColor,
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 1) 0 currentColor,
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 2) 0 currentColor,
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 2) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 2) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 3) 0 currentColor,
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 4) 0 currentColor,
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 4) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 4) 0 currentColor;
-}
-
 .number-6 {
   color: #4fd6cd;
-}
-
-.number-6::after {
-  box-shadow:
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 0) 0 currentColor,
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 0) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 0) 0 currentColor,
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 1) 0 currentColor,
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 2) 0 currentColor,
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 2) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 2) 0 currentColor,
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 3) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 3) 0 currentColor,
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 4) 0 currentColor,
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 4) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 4) 0 currentColor;
 }
 
 .number-7 {
   color: #e4e7e0;
 }
 
-.number-7::after {
-  box-shadow:
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 0) 0 currentColor,
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 0) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 0) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 1) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 2) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 3) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 4) 0 currentColor;
-}
-
 .number-8 {
   color: #9ca6a4;
-}
-
-.number-8::after {
-  box-shadow:
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 0) 0 currentColor,
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 0) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 0) 0 currentColor,
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 1) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 1) 0 currentColor,
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 2) 0 currentColor,
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 2) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 2) 0 currentColor,
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 3) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 3) 0 currentColor,
-    calc(var(--digit-pixel) * 0) calc(var(--digit-pixel) * 4) 0 currentColor,
-    calc(var(--digit-pixel) * 1) calc(var(--digit-pixel) * 4) 0 currentColor,
-    calc(var(--digit-pixel) * 2) calc(var(--digit-pixel) * 4) 0 currentColor;
 }
 
 body[data-theme="light"] .number-1 {

@@ -29,7 +29,7 @@ let touchHoldCell = null;
 let touchActionHandled = false;
 let ignoreClickUntil = 0;
 
-const COUNTER_GLYPHS = Object.freeze({
+const PIXEL_GLYPHS = Object.freeze({
   "-": ["000", "000", "111", "000", "000"],
   0: ["111", "101", "101", "101", "111"],
   1: ["010", "110", "010", "010", "111"],
@@ -47,26 +47,40 @@ function formatCounter(value) {
   return String(Math.max(-99, Math.min(999, value)));
 }
 
-function renderCounter(element, value, label) {
-  const valueText = formatCounter(value);
-  const glyphs = [];
+function createPixelGlyph(character, glyphClass, pixelClass) {
+  const glyph = document.createElement("span");
+  glyph.className = glyphClass;
+  glyph.setAttribute("aria-hidden", "true");
 
-  for (const character of valueText) {
-    const glyph = document.createElement("span");
-    glyph.className = "counter-glyph";
-    glyph.setAttribute("aria-hidden", "true");
-    for (const row of COUNTER_GLYPHS[character]) {
-      for (const pixel of row) {
-        const square = document.createElement("span");
-        square.className = `counter-pixel${pixel === "1" ? " lit" : ""}`;
-        glyph.append(square);
-      }
+  for (const row of PIXEL_GLYPHS[character]) {
+    for (const pixel of row) {
+      const square = document.createElement("span");
+      square.className = `${pixelClass}${pixel === "1" ? " lit" : ""}`;
+      glyph.append(square);
     }
-    glyphs.push(glyph);
   }
 
+  return glyph;
+}
+
+function renderCounter(element, value, label) {
+  const valueText = formatCounter(value);
+  const accessibleLabel = label(valueText);
+
+  if (element.dataset.value === valueText) {
+    if (element.getAttribute("aria-label") !== accessibleLabel) {
+      element.setAttribute("aria-label", accessibleLabel);
+    }
+    return;
+  }
+
+  const glyphs = [...valueText].map((character) =>
+    createPixelGlyph(character, "counter-glyph", "counter-pixel")
+  );
+
   element.replaceChildren(...glyphs);
-  element.setAttribute("aria-label", label(valueText));
+  element.dataset.value = valueText;
+  element.setAttribute("aria-label", accessibleLabel);
 }
 
 function cellButtonFromEvent(event) {
@@ -110,14 +124,18 @@ function updateTimer() {
 
 function setStatusText() {
   const stats = game.stats();
+  let nextStatus;
   if (game.status === "ready") {
-    status.textContent = "Choose a square to start.";
+    nextStatus = "Choose a square to start.";
   } else if (game.status === "won") {
-    status.textContent = `Cleared in ${elapsedSeconds} seconds.`;
+    nextStatus = `Cleared in ${elapsedSeconds} seconds.`;
   } else if (game.status === "lost") {
-    status.textContent = "Mine hit. Start a new board when ready.";
+    nextStatus = "Mine hit. Start a new board when ready.";
   } else {
-    status.textContent = `${stats.safeRemaining} safe squares left.`;
+    nextStatus = `${stats.safeRemaining} safe squares left.`;
+  }
+  if (status.textContent !== nextStatus) {
+    status.textContent = nextStatus;
   }
 }
 
@@ -186,16 +204,53 @@ function renderBoardStructure() {
   }
 }
 
+function setAttributeIfChanged(element, name, value) {
+  if (element.getAttribute(name) !== value) {
+    element.setAttribute(name, value);
+  }
+}
+
+function renderCellNumber(button, cell) {
+  const value = cell.revealed && !cell.mine && cell.adjacent
+    ? String(cell.adjacent)
+    : "";
+
+  if (button.dataset.number === value) {
+    return;
+  }
+
+  button.dataset.number = value;
+  if (!value) {
+    button.replaceChildren();
+    return;
+  }
+
+  const text = document.createElement("span");
+  text.className = "sr-only";
+  text.textContent = value;
+  button.replaceChildren(
+    text,
+    createPixelGlyph(value, "cell-number-glyph", "cell-number-pixel"),
+  );
+}
+
 function renderCells() {
+  const ariaDisabled = game.isComplete() ? "true" : "false";
+
   for (const button of board.children) {
     const cell = cellFromButton(button);
-    button.className = classForCell(cell);
-    button.textContent = cell.revealed && !cell.mine && cell.adjacent
-      ? String(cell.adjacent)
-      : "";
-    button.setAttribute("aria-label", labelForCell(cell));
-    button.setAttribute("aria-disabled", game.isComplete() ? "true" : "false");
-    button.tabIndex = Number(button.dataset.index) === focusedIndex ? 0 : -1;
+    const className = classForCell(cell);
+    const tabIndex = Number(button.dataset.index) === focusedIndex ? 0 : -1;
+
+    if (button.className !== className) {
+      button.className = className;
+    }
+    renderCellNumber(button, cell);
+    setAttributeIfChanged(button, "aria-label", labelForCell(cell));
+    setAttributeIfChanged(button, "aria-disabled", ariaDisabled);
+    if (button.tabIndex !== tabIndex) {
+      button.tabIndex = tabIndex;
+    }
   }
 }
 
@@ -225,11 +280,22 @@ function resizeBoard() {
     ),
   );
   board.style.setProperty("--tile-size", `${tileSize}px`);
+  board.style.setProperty("--digit-pixel", `${tileSize < 28 ? 3 : 4}px`);
 }
 
 function setFocus(index, moveFocus = false) {
-  focusedIndex = Math.max(0, Math.min(game.cells.length - 1, index));
-  renderCells();
+  const nextIndex = Math.max(0, Math.min(game.cells.length - 1, index));
+  if (nextIndex !== focusedIndex) {
+    const previousButton = board.children[focusedIndex];
+    const nextButton = board.children[nextIndex];
+    focusedIndex = nextIndex;
+    if (previousButton && previousButton.tabIndex !== -1) {
+      previousButton.tabIndex = -1;
+    }
+    if (nextButton && nextButton.tabIndex !== 0) {
+      nextButton.tabIndex = 0;
+    }
+  }
   if (moveFocus) {
     board.children[focusedIndex]?.focus();
   }
@@ -428,8 +494,7 @@ board.addEventListener("keydown", (event) => {
 board.addEventListener("focusin", (event) => {
   const button = cellButtonFromEvent(event);
   if (button) {
-    focusedIndex = Number(button.dataset.index);
-    renderCells();
+    setFocus(Number(button.dataset.index));
   }
 });
 
