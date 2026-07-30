@@ -10,7 +10,14 @@ The deployable app is the `public/` directory:
 
 ## Public Site
 
-The public URL is listed in [README.md](../README.md).
+The public site is deployed at `https://rareskey.github.io/clean-minesweeper/` and linked from [README.md](../README.md).
+
+## GitHub Pages
+
+- `.github/workflows/deploy-pages.yml` deploys after a push to `main` and supports manual dispatch.
+- The workflow uploads only `public/` as the Pages artifact; repository metadata, tests, specs, and local files are excluded.
+- The deployment job uses the `github-pages` environment with `contents: read`, `pages: write`, and `id-token: write`.
+- Concurrent deployments are serialized without cancelling a deployment already in progress.
 
 ## Browser-only Runtime
 
@@ -18,4 +25,4 @@ The game must not depend on provider SDKs, remote APIs, analytics, cookies, acco
 
 ## Provider Config
 
-Provider-specific config, project IDs, generated deployment caches, and login state should stay local unless a future public release needs them.
+The committed GitHub Pages workflow is public release infrastructure. Configuration, project IDs, generated deployment caches, and login state for other hosting providers stay local and ignored.

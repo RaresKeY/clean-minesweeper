@@ -2,13 +2,14 @@
 
 A clean, dependency-free Minesweeper game that runs entirely in the browser.
 
-Live site: https://clean-minesweeper.web.app
+Live site: https://rareskey.github.io/clean-minesweeper/
 
 ## Features
 
 - Classic beginner, intermediate, and expert boards
 - First-click-safe mine placement
 - Mouse, keyboard, and touchscreen controls
+- Native-aligned dark and light themes with a compact in-game menu
 - Locally generated PNG tile/icon assets
 - No runtime dependencies, accounts, analytics, ads, or network API calls
 
