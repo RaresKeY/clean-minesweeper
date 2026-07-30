@@ -1,16 +1,26 @@
-import { DIFFICULTIES, MARK_FLAG, MARK_NONE, MARK_QUESTION, MinesweeperGame } from "./game.js";
+import {
+  DIFFICULTIES,
+  MARK_FLAG,
+  MARK_QUESTION,
+  MinesweeperGame,
+} from "./game.js";
 
 const board = document.querySelector("#board");
-const boardWrap = document.querySelector(".board-wrap");
-const difficultySelect = document.querySelector("#difficulty-select");
+const boardStage = document.querySelector(".board-stage");
+const flagModeButton = document.querySelector("#flag-mode-button");
+const gameMenu = document.querySelector("#game-menu");
+const menuButton = document.querySelector("#menu-button");
+const menuViews = document.querySelectorAll("[data-menu-view]");
 const mineCount = document.querySelector("#mine-count");
 const resetButton = document.querySelector("#reset-button");
 const status = document.querySelector("#status");
+const themeColor = document.querySelector('meta[name="theme-color"]');
 const timer = document.querySelector("#timer");
 
 let difficultyKey = "beginner";
 let game = new MinesweeperGame(DIFFICULTIES[difficultyKey]);
 let focusedIndex = 0;
+let flagMode = false;
 let timerHandle = 0;
 let timerStartedAt = 0;
 let elapsedSeconds = 0;
@@ -19,9 +29,44 @@ let touchHoldCell = null;
 let touchActionHandled = false;
 let ignoreClickUntil = 0;
 
+const COUNTER_GLYPHS = Object.freeze({
+  "-": ["000", "000", "111", "000", "000"],
+  0: ["111", "101", "101", "101", "111"],
+  1: ["010", "110", "010", "010", "111"],
+  2: ["111", "001", "111", "100", "111"],
+  3: ["111", "001", "111", "001", "111"],
+  4: ["101", "101", "111", "001", "001"],
+  5: ["111", "100", "111", "001", "111"],
+  6: ["111", "100", "111", "101", "111"],
+  7: ["111", "001", "001", "001", "001"],
+  8: ["111", "101", "111", "101", "111"],
+  9: ["111", "101", "111", "001", "111"],
+});
+
 function formatCounter(value) {
-  const sign = value < 0 ? "-" : "";
-  return `${sign}${String(Math.abs(value)).padStart(3, "0")}`;
+  return String(Math.max(-99, Math.min(999, value)));
+}
+
+function renderCounter(element, value, label) {
+  const valueText = formatCounter(value);
+  const glyphs = [];
+
+  for (const character of valueText) {
+    const glyph = document.createElement("span");
+    glyph.className = "counter-glyph";
+    glyph.setAttribute("aria-hidden", "true");
+    for (const row of COUNTER_GLYPHS[character]) {
+      for (const pixel of row) {
+        const square = document.createElement("span");
+        square.className = `counter-pixel${pixel === "1" ? " lit" : ""}`;
+        glyph.append(square);
+      }
+    }
+    glyphs.push(glyph);
+  }
+
+  element.replaceChildren(...glyphs);
+  element.setAttribute("aria-label", label(valueText));
 }
 
 function cellButtonFromEvent(event) {
@@ -37,13 +82,13 @@ function startTimerIfNeeded() {
     return;
   }
   timerStartedAt = Date.now() - elapsedSeconds * 1000;
-  timerHandle = window.setInterval(updateTimer, 250);
+  timerHandle = globalThis.setInterval(updateTimer, 250);
   updateTimer();
 }
 
 function stopTimer() {
   if (timerHandle) {
-    window.clearInterval(timerHandle);
+    globalThis.clearInterval(timerHandle);
     timerHandle = 0;
   }
   updateTimer();
@@ -51,9 +96,16 @@ function stopTimer() {
 
 function updateTimer() {
   if (timerHandle) {
-    elapsedSeconds = Math.min(999, Math.floor((Date.now() - timerStartedAt) / 1000));
+    elapsedSeconds = Math.min(
+      999,
+      Math.floor((Date.now() - timerStartedAt) / 1000),
+    );
   }
-  timer.textContent = formatCounter(elapsedSeconds);
+  renderCounter(
+    timer,
+    elapsedSeconds,
+    (value) => `Elapsed time: ${value} seconds`,
+  );
 }
 
 function setStatusText() {
@@ -138,7 +190,9 @@ function renderCells() {
   for (const button of board.children) {
     const cell = cellFromButton(button);
     button.className = classForCell(cell);
-    button.textContent = cell.revealed && !cell.mine && cell.adjacent ? String(cell.adjacent) : "";
+    button.textContent = cell.revealed && !cell.mine && cell.adjacent
+      ? String(cell.adjacent)
+      : "";
     button.setAttribute("aria-label", labelForCell(cell));
     button.setAttribute("aria-disabled", game.isComplete() ? "true" : "false");
     button.tabIndex = Number(button.dataset.index) === focusedIndex ? 0 : -1;
@@ -147,7 +201,11 @@ function renderCells() {
 
 function renderStats() {
   const stats = game.stats();
-  mineCount.textContent = formatCounter(stats.minesRemaining);
+  renderCounter(
+    mineCount,
+    stats.minesRemaining,
+    (value) => `Mines remaining: ${value}`,
+  );
   setStatusText();
   updateTimer();
 }
@@ -158,10 +216,13 @@ function render() {
 }
 
 function resizeBoard() {
-  const wrapRect = boardWrap.getBoundingClientRect();
-  const availableHeight = Math.max(280, window.innerHeight - wrapRect.top - 24);
+  const availableWidth = Math.max(280, boardStage.clientWidth - 24);
+  const availableHeight = Math.max(280, boardStage.clientHeight - 24);
   const tileSize = Math.floor(
-    Math.max(22, Math.min(38, (wrapRect.width - 8) / game.width, availableHeight / game.height)),
+    Math.max(
+      22,
+      Math.min(32, availableWidth / game.width, availableHeight / game.height),
+    ),
   );
   board.style.setProperty("--tile-size", `${tileSize}px`);
 }
@@ -186,7 +247,9 @@ function finishAction(result) {
 
 function revealOrChord(button) {
   const cell = cellFromButton(button);
-  const result = cell.revealed ? game.chord(cell.x, cell.y) : game.reveal(cell.x, cell.y);
+  const result = cell.revealed
+    ? game.chord(cell.x, cell.y)
+    : game.reveal(cell.x, cell.y);
   finishAction(result);
 }
 
@@ -207,6 +270,50 @@ function resetGame(nextDifficultyKey = difficultyKey) {
   renderBoardStructure();
   resizeBoard();
   render();
+  updateMenuSelection();
+}
+
+function updateMenuSelection() {
+  for (const button of gameMenu.querySelectorAll("[data-difficulty]")) {
+    button.dataset.active = String(button.dataset.difficulty === difficultyKey);
+  }
+  for (const button of gameMenu.querySelectorAll("[data-theme-option]")) {
+    button.dataset.active = String(
+      button.dataset.themeOption === document.body.dataset.theme,
+    );
+  }
+  flagModeButton.setAttribute("aria-pressed", String(flagMode));
+  flagModeButton.textContent = flagMode ? "Flag on" : "Flag off";
+}
+
+function setMenuView(name, moveFocus = false) {
+  for (const view of menuViews) {
+    view.hidden = view.dataset.menuView !== name;
+  }
+  if (moveFocus) {
+    gameMenu.querySelector(`[data-menu-view="${name}"] .menu-item`)?.focus();
+  }
+}
+
+function closeMenu(returnFocus = false) {
+  gameMenu.hidden = true;
+  menuButton.setAttribute("aria-expanded", "false");
+  setMenuView("root");
+  if (returnFocus) {
+    menuButton.focus();
+  }
+}
+
+function openMenu() {
+  gameMenu.hidden = false;
+  menuButton.setAttribute("aria-expanded", "true");
+  setMenuView("root", true);
+}
+
+function setTheme(nextTheme) {
+  document.body.dataset.theme = nextTheme;
+  themeColor.content = nextTheme === "dark" ? "#1e2221" : "#ffffff";
+  updateMenuSelection();
 }
 
 function moveFocusBy(dx, dy) {
@@ -241,13 +348,15 @@ board.addEventListener("contextmenu", (event) => {
 
 board.addEventListener("pointerdown", (event) => {
   const button = cellButtonFromEvent(event);
-  if (!button || (event.pointerType !== "touch" && event.pointerType !== "pen")) {
+  if (
+    !button || (event.pointerType !== "touch" && event.pointerType !== "pen")
+  ) {
     return;
   }
   touchActionHandled = false;
   touchHoldCell = button;
   button.classList.add("pressed");
-  touchHoldHandle = window.setTimeout(() => {
+  touchHoldHandle = globalThis.setTimeout(() => {
     if (touchHoldCell) {
       touchActionHandled = true;
       ignoreClickUntil = Date.now() + 700;
@@ -258,22 +367,29 @@ board.addEventListener("pointerdown", (event) => {
 });
 
 board.addEventListener("pointerup", (event) => {
-  if (!touchHoldCell || (event.pointerType !== "touch" && event.pointerType !== "pen")) {
+  if (
+    !touchHoldCell ||
+    (event.pointerType !== "touch" && event.pointerType !== "pen")
+  ) {
     return;
   }
   event.preventDefault();
-  window.clearTimeout(touchHoldHandle);
+  globalThis.clearTimeout(touchHoldHandle);
   touchHoldCell.classList.remove("pressed");
   ignoreClickUntil = Date.now() + 700;
   if (!touchActionHandled) {
     setFocus(Number(touchHoldCell.dataset.index));
-    revealOrChord(touchHoldCell);
+    if (flagMode) {
+      cycleCellMark(touchHoldCell);
+    } else {
+      revealOrChord(touchHoldCell);
+    }
   }
   touchHoldCell = null;
 });
 
 board.addEventListener("pointercancel", () => {
-  window.clearTimeout(touchHoldHandle);
+  globalThis.clearTimeout(touchHoldHandle);
   touchHoldCell?.classList.remove("pressed");
   touchHoldCell = null;
 });
@@ -317,15 +433,74 @@ board.addEventListener("focusin", (event) => {
   }
 });
 
-difficultySelect.addEventListener("change", () => {
-  resetGame(difficultySelect.value);
+menuButton.addEventListener("click", () => {
+  if (gameMenu.hidden) {
+    openMenu();
+  } else {
+    closeMenu(true);
+  }
 });
 
 resetButton.addEventListener("click", () => {
   resetGame();
-  board.children[focusedIndex]?.focus();
+  closeMenu(true);
 });
 
-window.addEventListener("resize", resizeBoard);
+for (const button of gameMenu.querySelectorAll("[data-menu-target]")) {
+  button.addEventListener("click", () => {
+    setMenuView(button.dataset.menuTarget, true);
+  });
+}
 
+for (const button of gameMenu.querySelectorAll("[data-difficulty]")) {
+  button.addEventListener("click", () => {
+    resetGame(button.dataset.difficulty);
+    closeMenu(true);
+  });
+}
+
+for (const button of gameMenu.querySelectorAll("[data-theme-option]")) {
+  button.addEventListener("click", () => {
+    setTheme(button.dataset.themeOption);
+    closeMenu(true);
+  });
+}
+
+flagModeButton.addEventListener("click", () => {
+  flagMode = !flagMode;
+  updateMenuSelection();
+  closeMenu(true);
+});
+
+document.addEventListener("pointerdown", (event) => {
+  if (
+    !gameMenu.hidden && !gameMenu.contains(event.target) &&
+    !menuButton.contains(event.target)
+  ) {
+    closeMenu();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !gameMenu.hidden) {
+    event.preventDefault();
+    closeMenu(true);
+  } else if (
+    (event.key.toLowerCase() === "m" || event.key.toLowerCase() === "o") &&
+    !event.ctrlKey &&
+    !event.metaKey &&
+    !event.altKey
+  ) {
+    event.preventDefault();
+    if (gameMenu.hidden) {
+      openMenu();
+    } else {
+      closeMenu(true);
+    }
+  }
+});
+
+globalThis.addEventListener("resize", resizeBoard);
+
+setTheme("dark");
 resetGame();

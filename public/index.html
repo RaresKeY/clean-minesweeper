@@ -3,44 +3,69 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#1f4f46">
+    <meta name="theme-color" content="#1e2221">
     <title>Clean Minesweeper</title>
     <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png">
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
     <link rel="manifest" href="site.webmanifest">
     <link rel="stylesheet" href="styles.css">
   </head>
-  <body>
+  <body data-theme="dark">
     <main class="shell" aria-labelledby="game-title">
-      <header class="topbar">
-        <div>
-          <h1 id="game-title">Clean Minesweeper</h1>
-          <p id="status" class="status" aria-live="polite">Choose a square to start.</p>
+      <h1 id="game-title" class="sr-only">Clean Minesweeper</h1>
+
+      <header class="hud">
+        <div class="counters">
+          <output id="mine-count" class="counter" aria-label="Mines remaining: 10">10</output>
+          <output id="timer" class="counter" aria-label="Elapsed time: 0 seconds">0</output>
         </div>
-        <button id="reset-button" class="reset-button" type="button" aria-label="Restart game">New</button>
+        <button
+          id="menu-button"
+          class="menu-button"
+          type="button"
+          aria-expanded="false"
+          aria-controls="game-menu"
+        >Menu</button>
       </header>
 
-      <section class="controls" aria-label="Game controls">
-        <label class="field">
-          <span>Difficulty</span>
-          <select id="difficulty-select">
-            <option value="beginner">Beginner 9x9</option>
-            <option value="intermediate">Intermediate 16x16</option>
-            <option value="expert">Expert 30x16</option>
-          </select>
-        </label>
-        <div class="meter" aria-label="Mines remaining">
-          <span class="meter-label">Mines</span>
-          <span id="mine-count" class="meter-value">010</span>
+      <nav id="game-menu" class="game-menu" aria-label="Game menu" hidden>
+        <div data-menu-view="root">
+          <button class="menu-item" type="button" data-menu-target="board">
+            <span>Board</span><span aria-hidden="true">&gt;</span>
+          </button>
+          <button class="menu-item" type="button" data-menu-target="theme">
+            <span>Theme</span><span aria-hidden="true">&gt;</span>
+          </button>
+          <button id="flag-mode-button" class="menu-item" type="button" aria-pressed="false">
+            Flag off
+          </button>
+          <button id="reset-button" class="menu-item" type="button">Reset</button>
         </div>
-        <div class="meter" aria-label="Elapsed time">
-          <span class="meter-label">Time</span>
-          <span id="timer" class="meter-value">000</span>
-        </div>
-      </section>
 
-      <section class="board-wrap" aria-label="Minesweeper board">
-        <div id="board" class="board" role="grid" aria-label="Minesweeper grid"></div>
+        <div data-menu-view="board" hidden>
+          <button class="menu-item menu-back" type="button" data-menu-target="root">
+            <span aria-hidden="true">&lt;</span><span>Back</span>
+          </button>
+          <button class="menu-item" type="button" data-difficulty="beginner">Beginner</button>
+          <button class="menu-item" type="button" data-difficulty="intermediate">Intermediate</button>
+          <button class="menu-item" type="button" data-difficulty="expert">Expert</button>
+        </div>
+
+        <div data-menu-view="theme" hidden>
+          <button class="menu-item menu-back" type="button" data-menu-target="root">
+            <span aria-hidden="true">&lt;</span><span>Back</span>
+          </button>
+          <button class="menu-item" type="button" data-theme-option="dark">Dark</button>
+          <button class="menu-item" type="button" data-theme-option="light">Light</button>
+        </div>
+      </nav>
+
+      <p id="status" class="sr-only" aria-live="polite">Choose a square to start.</p>
+
+      <section class="board-stage" aria-label="Minesweeper board">
+        <div class="board-wrap">
+          <div id="board" class="board" role="grid" aria-label="Minesweeper grid"></div>
+        </div>
       </section>
     </main>
 

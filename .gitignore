@@ -5,3 +5,11 @@ node_modules/
 coverage/
 dist/
 tmp/
+
+# Local-only asset generation.
+/scripts/generate_assets.py
+
+# Local-only hosting configuration and state.
+/.firebase/
+/.firebaserc
+/firebase.json

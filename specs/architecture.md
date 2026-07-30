@@ -13,6 +13,7 @@ The application is a static web app:
 | `public/assets/` | Generated PNG assets and favicon files consumed by the page. |
 | `tests/` | Node-based verification; not required at runtime. |
 | `package.json` | Local scripts and ESM test configuration with no dependencies. |
+| `.github/workflows/deploy-pages.yml` | Publishes only `public/` to GitHub Pages after updates reach `main`. |
 
 ## Dependency Boundary
 
@@ -23,5 +24,5 @@ The application is a static web app:
 ## Module Contract
 
 - `game.js` owns board data, mine placement, reveal flood-fill, flag cycling, win/loss status, and stats.
-- `app.js` owns DOM state, event translation, timer display, responsive board CSS variables, keyboard navigation, touch long-press, and reset/difficulty controls.
+- `app.js` owns DOM state, event translation, timer display, responsive board CSS variables, keyboard navigation, touch long-press and flag mode, session-only theme state, and the nested reset/difficulty menu.
 - Rendering must derive from engine state rather than duplicating gameplay rules in DOM code.

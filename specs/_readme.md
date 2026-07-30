@@ -18,14 +18,15 @@ Clean Minesweeper is a browser-only static web Minesweeper game. The deployable 
 - No network calls, analytics, ads, CDN fonts, package imports, or third-party runtime dependencies.
 - Generated raster assets are committed under `public/assets/`.
 - Numbers are rendered with CSS and text, not pre-rendered into tile images.
-- The public README links to the hosted site; provider-specific deployment details are intentionally kept out of the tracked repo.
+- The public GitHub Pages workflow deploys only `public/`; configuration and state for other hosting providers stay local-only.
 
 ## Volatile State To Re-check
 
 | Topic | Re-check When |
 |-------|---------------|
 | GitHub remote | Before pushing or changing repo visibility. |
-| Hosting provider | Before deployment; provider-specific config should stay local unless the public repo needs it. |
+| GitHub Pages | When its workflow, action versions, permissions, public URL, or publishing behavior changes. |
+| Other hosting providers | Before deployment; their configuration and state stay local-only. |
 | Browser behavior | When changing input handling, layout sizing, or tile assets. |
 
 ## Spec Update Rule
