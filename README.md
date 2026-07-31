@@ -6,7 +6,7 @@ Live site: https://rareskey.github.io/clean-minesweeper/
 
 ## Features
 
-- Classic beginner, intermediate, and expert boards
+- Classic beginner, intermediate, expert, and custom boards
 - First-click-safe mine placement
 - Mouse, keyboard, and touchscreen controls
 - Native-aligned dark and light themes with a compact in-game menu

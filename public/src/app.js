@@ -1,12 +1,21 @@
 import {
+  CUSTOM_LIMITS,
   DIFFICULTIES,
   MARK_FLAG,
   MARK_QUESTION,
   MinesweeperGame,
+  createCustomDifficulty,
+  customMineMaximum,
 } from "./game.js";
 
 const board = document.querySelector("#board");
 const boardStage = document.querySelector(".board-stage");
+const customBoardButton = document.querySelector("#custom-board-button");
+const customBoardError = document.querySelector("#custom-board-error");
+const customBoardForm = document.querySelector("#custom-board-form");
+const customHeight = document.querySelector("#custom-height");
+const customMines = document.querySelector("#custom-mines");
+const customWidth = document.querySelector("#custom-width");
 const flagModeButton = document.querySelector("#flag-mode-button");
 const gameMenu = document.querySelector("#game-menu");
 const menuButton = document.querySelector("#menu-button");
@@ -17,8 +26,8 @@ const status = document.querySelector("#status");
 const themeColor = document.querySelector('meta[name="theme-color"]');
 const timer = document.querySelector("#timer");
 
-let difficultyKey = "beginner";
-let game = new MinesweeperGame(DIFFICULTIES[difficultyKey]);
+let currentConfig = DIFFICULTIES.beginner;
+let game = new MinesweeperGame(currentConfig);
 let focusedIndex = 0;
 let flagMode = false;
 let timerHandle = 0;
@@ -189,6 +198,10 @@ function renderBoardStructure() {
   board.replaceChildren();
   board.style.setProperty("--cols", game.width);
   board.style.setProperty("--rows", game.height);
+  board.setAttribute(
+    "aria-label",
+    `${game.config.label} Minesweeper grid, ${game.width} columns by ${game.height} rows`,
+  );
   board.setAttribute("aria-rowcount", String(game.height));
   board.setAttribute("aria-colcount", String(game.width));
 
@@ -327,9 +340,9 @@ function cycleCellMark(button) {
   }
 }
 
-function resetGame(nextDifficultyKey = difficultyKey) {
-  difficultyKey = nextDifficultyKey;
-  game = new MinesweeperGame(DIFFICULTIES[difficultyKey]);
+function resetGame(nextConfig = currentConfig) {
+  currentConfig = { ...nextConfig };
+  game = new MinesweeperGame(currentConfig);
   focusedIndex = 0;
   elapsedSeconds = 0;
   stopTimer();
@@ -341,8 +354,11 @@ function resetGame(nextDifficultyKey = difficultyKey) {
 
 function updateMenuSelection() {
   for (const button of gameMenu.querySelectorAll("[data-difficulty]")) {
-    button.dataset.active = String(button.dataset.difficulty === difficultyKey);
+    button.dataset.active = String(
+      button.dataset.difficulty === currentConfig.key,
+    );
   }
+  customBoardButton.dataset.active = String(currentConfig.key === "custom");
   for (const button of gameMenu.querySelectorAll("[data-theme-option]")) {
     button.dataset.active = String(
       button.dataset.themeOption === document.body.dataset.theme,
@@ -357,8 +373,30 @@ function setMenuView(name, moveFocus = false) {
     view.hidden = view.dataset.menuView !== name;
   }
   if (moveFocus) {
-    gameMenu.querySelector(`[data-menu-view="${name}"] .menu-item`)?.focus();
+    const view = gameMenu.querySelector(`[data-menu-view="${name}"]`);
+    view?.querySelector("[data-menu-focus], .menu-item")?.focus();
   }
+}
+
+function updateCustomMineMaximum() {
+  const width = customWidth.valueAsNumber;
+  const height = customHeight.valueAsNumber;
+  let maximum = CUSTOM_LIMITS.maxMines;
+  try {
+    maximum = customMineMaximum(width, height);
+  } catch {
+    // Keep the global limit until both dimensions are valid.
+  }
+  customMines.max = String(maximum);
+  return maximum;
+}
+
+function prepareCustomBoardForm() {
+  customWidth.value = String(game.width);
+  customHeight.value = String(game.height);
+  customMines.value = String(game.mineTotal);
+  updateCustomMineMaximum();
+  customBoardError.textContent = "";
 }
 
 function closeMenu(returnFocus = false) {
@@ -513,16 +551,48 @@ resetButton.addEventListener("click", () => {
 
 for (const button of gameMenu.querySelectorAll("[data-menu-target]")) {
   button.addEventListener("click", () => {
+    if (button.dataset.menuTarget === "custom") {
+      prepareCustomBoardForm();
+    }
     setMenuView(button.dataset.menuTarget, true);
   });
 }
 
 for (const button of gameMenu.querySelectorAll("[data-difficulty]")) {
   button.addEventListener("click", () => {
-    resetGame(button.dataset.difficulty);
+    resetGame(DIFFICULTIES[button.dataset.difficulty]);
     closeMenu(true);
   });
 }
+
+for (const input of [customWidth, customHeight, customMines]) {
+  input.addEventListener("input", () => {
+    updateCustomMineMaximum();
+    customBoardError.textContent = "";
+  });
+}
+
+customBoardForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  updateCustomMineMaximum();
+  if (!customBoardForm.reportValidity()) {
+    customBoardError.textContent =
+      "Enter whole numbers within the displayed limits.";
+    return;
+  }
+
+  try {
+    const config = createCustomDifficulty(
+      customWidth.valueAsNumber,
+      customHeight.valueAsNumber,
+      customMines.valueAsNumber,
+    );
+    resetGame(config);
+    closeMenu(true);
+  } catch (error) {
+    customBoardError.textContent = error.message;
+  }
+});
 
 for (const button of gameMenu.querySelectorAll("[data-theme-option]")) {
   button.addEventListener("click", () => {

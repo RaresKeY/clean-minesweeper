@@ -24,6 +24,6 @@ The application is a static web app:
 ## Module Contract
 
 - `game.js` owns board data, mine placement, reveal flood-fill, flag cycling, win/loss status, and stats.
-- `app.js` owns DOM state, event translation, timer display, responsive board CSS variables, keyboard navigation, touch long-press and flag mode, session-only theme state, and the nested reset/difficulty menu.
+- `app.js` owns DOM state, event translation, timer display, responsive board CSS variables, keyboard navigation, touch long-press and flag mode, session-only theme state, and the nested reset/difficulty/custom-board menu.
 - Rendering must derive from engine state rather than duplicating gameplay rules in DOM code.
 - Routine renders compare derived state with the current DOM before writing. Focus changes update only the previous and next tab stops, and counters rebuild only when their displayed value changes.

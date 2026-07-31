@@ -22,6 +22,7 @@
 - `R` restarts the current difficulty.
 - `M` or `O` opens or closes the game menu.
 - `Escape` closes the game menu and returns focus to its trigger.
+- The custom-board form supports normal form keyboard behavior; `Enter` submits valid settings.
 
 ## Accessibility
 
@@ -30,4 +31,5 @@
 - Status changes use a polite live region.
 - Focus indicators must be visible on keyboard navigation.
 - The menu uses native buttons, exposes its expanded state through `aria-expanded`, and returns focus to its trigger after a selection or keyboard dismissal.
+- Custom-board controls use labeled native number inputs, announce validation errors, and move focus to the first invalid field through browser constraint validation.
 - Counter outputs expose spoken mine and elapsed-time labels independently of their visual pixel glyphs.

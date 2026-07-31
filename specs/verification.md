@@ -29,7 +29,8 @@ The GitHub Pages workflow publishes only after changes reach `main`. Its deploym
 After UI changes:
 
 - Serve with `python3 -m http.server 8080 --directory public`.
-- Verify beginner, intermediate, and expert reset correctly.
+- Verify beginner, intermediate, expert, and valid custom boards reset correctly.
+- Verify custom width, height, and mine limits reject invalid, fractional, and over-capacity values without replacing the active board.
 - Verify the `MENU` button opens the board and theme submenus, marks the active choices, and closes after a selection.
 - Verify dark is the initial theme and the light theme updates the whole HUD, board, menu, and browser theme color.
 - Verify mouse reveal, right-click flagging, and chording.

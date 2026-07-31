@@ -49,6 +49,68 @@
           <button class="menu-item" type="button" data-difficulty="beginner">Beginner</button>
           <button class="menu-item" type="button" data-difficulty="intermediate">Intermediate</button>
           <button class="menu-item" type="button" data-difficulty="expert">Expert</button>
+          <button
+            id="custom-board-button"
+            class="menu-item"
+            type="button"
+            data-menu-target="custom"
+          >Custom</button>
+        </div>
+
+        <div data-menu-view="custom" hidden>
+          <button class="menu-item menu-back" type="button" data-menu-target="board">
+            <span aria-hidden="true">&lt;</span><span>Back</span>
+          </button>
+          <form id="custom-board-form" class="custom-board-form" novalidate>
+            <label class="custom-board-field" for="custom-width">
+              <span>Width</span>
+              <input
+                id="custom-width"
+                class="custom-board-input"
+                type="number"
+                min="9"
+                max="30"
+                value="9"
+                inputmode="numeric"
+                aria-describedby="custom-board-limits custom-board-error"
+                data-menu-focus
+                required
+              >
+            </label>
+            <label class="custom-board-field" for="custom-height">
+              <span>Height</span>
+              <input
+                id="custom-height"
+                class="custom-board-input"
+                type="number"
+                min="9"
+                max="24"
+                value="9"
+                inputmode="numeric"
+                aria-describedby="custom-board-limits custom-board-error"
+                required
+              >
+            </label>
+            <label class="custom-board-field" for="custom-mines">
+              <span>Mines</span>
+              <input
+                id="custom-mines"
+                class="custom-board-input"
+                type="number"
+                min="10"
+                max="80"
+                value="10"
+                inputmode="numeric"
+                aria-describedby="custom-board-limits custom-board-error"
+                required
+              >
+            </label>
+            <p id="custom-board-limits" class="custom-board-limits">
+              Width 9–30, height 9–24, up to 668 mines.
+            </p>
+            <p id="custom-board-error" class="custom-board-error" aria-live="polite"></p>
+            <button class="menu-item custom-board-start" type="submit">Start</button>
+          </form>
         </div>
 
         <div data-menu-view="theme" hidden>

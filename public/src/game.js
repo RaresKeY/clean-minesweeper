@@ -1,5 +1,11 @@
 export const DIFFICULTIES = Object.freeze({
-  beginner: Object.freeze({ key: "beginner", label: "Beginner", width: 9, height: 9, mines: 10 }),
+  beginner: Object.freeze({
+    key: "beginner",
+    label: "Beginner",
+    width: 9,
+    height: 9,
+    mines: 10,
+  }),
   intermediate: Object.freeze({
     key: "intermediate",
     label: "Intermediate",
@@ -9,6 +15,57 @@ export const DIFFICULTIES = Object.freeze({
   }),
   expert: Object.freeze({ key: "expert", label: "Expert", width: 30, height: 16, mines: 99 }),
 });
+
+export const CUSTOM_LIMITS = Object.freeze({
+  minWidth: 9,
+  maxWidth: 30,
+  minHeight: 9,
+  maxHeight: 24,
+  minMines: 10,
+  maxMines: 668,
+});
+
+function assertIntegerInRange(value, minimum, maximum, label) {
+  if (!Number.isInteger(value)) {
+    throw new RangeError(`${label} must be a whole number.`);
+  }
+  if (value < minimum || value > maximum) {
+    throw new RangeError(`${label} must be between ${minimum} and ${maximum}.`);
+  }
+}
+
+export function customMineMaximum(width, height) {
+  assertIntegerInRange(
+    width,
+    CUSTOM_LIMITS.minWidth,
+    CUSTOM_LIMITS.maxWidth,
+    "Width",
+  );
+  assertIntegerInRange(
+    height,
+    CUSTOM_LIMITS.minHeight,
+    CUSTOM_LIMITS.maxHeight,
+    "Height",
+  );
+  return Math.min(CUSTOM_LIMITS.maxMines, width * height - 1);
+}
+
+export function createCustomDifficulty(width, height, mines) {
+  const maximumMines = customMineMaximum(width, height);
+  assertIntegerInRange(
+    mines,
+    CUSTOM_LIMITS.minMines,
+    maximumMines,
+    "Mines",
+  );
+  return {
+    key: "custom",
+    label: "Custom",
+    width,
+    height,
+    mines,
+  };
+}
 
 export const MARK_NONE = "none";
 export const MARK_FLAG = "flag";

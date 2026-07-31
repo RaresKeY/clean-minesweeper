@@ -1,5 +1,13 @@
 import assert from "node:assert/strict";
-import { DIFFICULTIES, MARK_FLAG, MARK_NONE, MARK_QUESTION, MinesweeperGame } from "../public/src/game.js";
+import {
+  DIFFICULTIES,
+  MARK_FLAG,
+  MARK_NONE,
+  MARK_QUESTION,
+  MinesweeperGame,
+  createCustomDifficulty,
+  customMineMaximum,
+} from "../public/src/game.js";
 
 function fixedRng(value) {
   return () => value;
@@ -93,11 +101,40 @@ function testChordRevealsWhenFlagsMatch() {
   assert.equal(safeB.revealed, true);
 }
 
+function testCustomDifficultyValidation() {
+  assert.deepEqual(createCustomDifficulty(30, 24, 160), {
+    key: "custom",
+    label: "Custom",
+    width: 30,
+    height: 24,
+    mines: 160,
+  });
+  assert.equal(customMineMaximum(30, 24), 668);
+  assert.equal(customMineMaximum(9, 9), 80);
+  assert.throws(() => createCustomDifficulty(8, 9, 10), /Width/);
+  assert.throws(() => createCustomDifficulty(9, 25, 10), /Height/);
+  assert.throws(() => createCustomDifficulty(9, 9, 9), /Mines/);
+  assert.throws(() => createCustomDifficulty(9, 9, 81), /Mines/);
+  assert.throws(() => createCustomDifficulty(9.5, 9, 10), /whole number/);
+}
+
+function testMaximumDensityCustomBoardStartsSafely() {
+  const config = createCustomDifficulty(9, 9, 80);
+  const game = new MinesweeperGame(config, { rng: fixedRng(0) });
+  const result = game.reveal(4, 4);
+  assert.equal(result.started, true);
+  assert.equal(game.cellAt(4, 4).mine, false);
+  assert.equal(game.cells.filter((cell) => cell.mine).length, 80);
+  assert.equal(game.status, "won");
+}
+
 testFirstRevealSafety();
 testMarkCycle();
 testQuestionRevealClearsMarker();
 testWinFlagsRemainingMines();
 testLossRevealsMinesAndWrongFlags();
 testChordRevealsWhenFlagsMatch();
+testCustomDifficultyValidation();
+testMaximumDensityCustomBoardStartsSafely();
 
 console.log("game tests passed");

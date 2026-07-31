@@ -7,6 +7,10 @@
 | Beginner | 9 | 9 | 10 |
 | Intermediate | 16 | 16 | 40 |
 | Expert | 30 | 16 | 99 |
+| Custom | 9–30 | 9–24 | 10–668, capped at one fewer than the cell count |
+
+Custom width, height, and mine count must be whole numbers. Custom settings are
+session-only and remain active when the board is reset.
 
 ## Rules
 
