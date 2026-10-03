@@ -32,3 +32,5 @@ Clean Minesweeper is a browser-only static web Minesweeper game. The deployable 
 ## Spec Update Rule
 
 When implementation changes behavior, assets, deployment, or verification commands, update the nearest relevant spec and this map if a spec is added or moved.
+
+[Local launch entrypoint](local-launch.md): root `play.sh`, runtime selection and on-click boundaries.
